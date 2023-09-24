@@ -1,11 +1,14 @@
 const express = require('express');
-const path = require("path")
-const formidableMiddleware = require('express-formidable');
-const formidable = require('formidable');
-const fs = require('fs');
 const app = express();
 const port = 3001;
+
+const formidableMiddleware = require('express-formidable');
+
 const ffmpeg = require('ffmpeg');
+
+const fs = require('fs');
+const path = require("path")
+
 const cors = require('cors')
 const uploadPath = path.join(__dirname, "public")
 app.use(express.json());
@@ -32,15 +35,17 @@ app.post(
         }
         const inputFilePath = file.path;
         const outputFilePath = path.join(__dirname, 'converted', 'converted_video.mp4');
-        console.log(ffmpeg)
         try {
             var process = new ffmpeg(inputFilePath);
             process.then(function (video) {
-                // Callback mode
-                video.setVideoCodec('h.264')
+                console.log(video);
+                video.setVideoCodec('h264');
+                console.log('is good');
             }, function (err) {
                 console.log('Error: ' + err);
             });
+
+            
         } catch (e) {
             console.log(e.code);
             console.log(e.msg);
@@ -51,4 +56,9 @@ app.post(
 
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
+    if (!fs.existsSync(path.join(__dirname, 'public'))) {
+        fs.mkdir(path.join(__dirname, 'public'), (err) => {
+            if (err) throw err;
+        })
+    }
 });
