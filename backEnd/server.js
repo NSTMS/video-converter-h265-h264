@@ -26,7 +26,15 @@ app.post(
         encoding: "utf-8",
         uploadDir: uploadPath,
         keepExtensions: true,
-    }),
+    },
+    [
+        {
+            event: 'fileBegin',
+            action: (_, __, ___, name, file)=>{
+                file.path = path.join(__dirname, 'public', file.name);
+            } 
+        }
+    ]),
     function (req, res) {
         const file = req.files.file;
         if (!file || !file.name) {
@@ -34,13 +42,17 @@ app.post(
             return;
         }
         const inputFilePath = file.path;
-        const outputFilePath = path.join(__dirname, 'converted', 'converted_video.mp4');
+        const outputFilePath = path.join(__dirname, 'converted', `conv-${file.name}`);
         try {
             var process = new ffmpeg(inputFilePath);
-            process.then(function (video) {
-                console.log(video);
-                video.setVideoCodec('h264');
-                console.log('is good');
+            process.then(function(video){
+                video
+                .setVideoCodec('h264')
+                .save(outputFilePath, function(err, vid){
+                    res.setHeader('Content-Type', 'video/mp4');
+                    res.sendFile(outputFilePath);
+                });
+                
             }, function (err) {
                 console.log('Error: ' + err);
             });
@@ -55,9 +67,14 @@ app.post(
 
 
 app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
+    console.log(`Server listening at http://localhost:${port}`);    
     if (!fs.existsSync(path.join(__dirname, 'public'))) {
         fs.mkdir(path.join(__dirname, 'public'), (err) => {
+            if (err) throw err;
+        })
+    }
+    if (!fs.existsSync(path.join(__dirname, 'converted'))) {
+        fs.mkdir(path.join(__dirname, 'converted'), (err) => {
             if (err) throw err;
         })
     }
