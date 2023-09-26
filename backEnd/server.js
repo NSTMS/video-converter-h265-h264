@@ -42,16 +42,18 @@ app.post(
             return;
         }
         const inputFilePath = file.path;
-        const outputFilePath = path.join(__dirname, 'converted', `conv-${file.name}`);
+        const outputFilePath = './converted/idziXD.mp4';
+        //const outputFilePath = path.join(__dirname, 'converted', `conv-${file.name}`);
         try {
             var process = new ffmpeg(inputFilePath);
             process.then(function(video){
                 video
                 .setVideoCodec('h264')
-                .save(outputFilePath, function(err, vid){
+                .save(outputFilePath, (err, vid)=>{
                     res.setHeader('Content-Type', 'video/mp4');
                     res.sendFile(outputFilePath);
-                });
+                })
+                
                 
             }, function (err) {
                 console.log('Error: ' + err);
@@ -59,8 +61,7 @@ app.post(
 
             
         } catch (e) {
-            console.log(e.code);
-            console.log(e.msg);
+            console.log("E");
         }
     }
 );

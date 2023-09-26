@@ -8,9 +8,9 @@
             body: data
         })
         .then(res => res.blob())
-        .then(video =>{
-            console.log(video);
-            source = URL.createObjectURL(video);
+        .then(async(video) =>{
+            const buf = await video.arrayBuffer();
+            source = URL.createObjectURL(new Blob([buf]));
         })
         .catch((err)=>{
             console.log("err: ", err)
