@@ -20,6 +20,14 @@ app.use(express.urlencoded({ extended: true }));
 // }));
 
 app.use(cors())
+
+app.get('/vid/:video',(req, res)=>{
+    const {video} = req.params;
+
+    res.setHeader('Content-Type', 'video/mp4');
+    res.sendFile(path.join(__dirname, 'converted', video));
+})
+
 app.post(
     "/api/upload",
     formidableMiddleware({
@@ -42,14 +50,15 @@ app.post(
             return;
         }
         const inputFilePath = file.path;
-        const outputFilePath = './converted/idziXD.mp4';
-        //const outputFilePath = path.join(__dirname, 'converted', `conv-${file.name}`);
+        const outputFilePath = path.join(__dirname, 'converted', `conv-${file.name}`);
         try {
             var process = new ffmpeg(inputFilePath);
             process.then(function(video){
                 video
                 .setVideoCodec('h264')
                 .save(outputFilePath, (err, vid)=>{
+                    // res.setHeader('Content-Type', 'application/json');
+                    // res.send(JSON.stringify({file: `conv-${file.name}`}))
                     res.setHeader('Content-Type', 'video/mp4');
                     res.sendFile(outputFilePath);
                 })
