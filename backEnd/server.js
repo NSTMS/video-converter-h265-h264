@@ -4,7 +4,7 @@ const port = 3001;
 
 const formidableMiddleware = require('express-formidable');
 
-const ffmpeg = require('ffmpeg');
+const {FFMpegProgress} = require('ffmpeg-progress-wrapper');
 
 const fs = require('fs');
 const path = require("path")
@@ -52,25 +52,23 @@ app.post(
         const inputFilePath = file.path;
         const outputFilePath = path.join(__dirname, 'converted', `conv-${file.name}`);
         try {
-            var process = new ffmpeg(inputFilePath);
-            process.then(function(video){
-                video
-                .setVideoCodec('h264')
-                .save(outputFilePath, (err, vid)=>{
-                    // res.setHeader('Content-Type', 'application/json');
-                    // res.send(JSON.stringify({file: `conv-${file.name}`}))
-                    res.setHeader('Content-Type', 'video/mp4');
-                    res.sendFile(outputFilePath);
-                })
-                
-                
-            }, function (err) {
-                console.log('Error: ' + err);
-            });
+            const process = new FFMpegProgress(['-i', inputFilePath,'-c:v', 'h264',  outputFilePath]);
+            // process.on('raw', ()=>{
+            //     console.log("Raw");
+            // });
+    
+            // process.once('details', (details) => console.log(JSON.stringify(details)));
 
+            process.on('progress', (progress) => console.log(progress.frame));
+
+            process.once('end', ()=>{
+                console.log("End")
+                res.setHeader('Content-Type', 'video/mp4');
+                res.sendFile(outputFilePath);
+            });
             
         } catch (e) {
-            console.log("E");
+            console.log(e);
         }
     }
 );
