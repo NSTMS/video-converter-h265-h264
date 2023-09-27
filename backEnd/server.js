@@ -21,11 +21,20 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors())
 
+let prgsMap = new Map();
+
 app.get('/vid/:video',(req, res)=>{
     const {video} = req.params;
 
     res.setHeader('Content-Type', 'video/mp4');
     res.sendFile(path.join(__dirname, 'converted', video));
+})
+
+app.get('/prg/:video',(req, res)=>{
+    const {video} = req.params;
+
+    res.setHeader('Content-Type', 'application/json');
+    res.json({perc: prgsMap[video]});
 })
 
 app.post(
@@ -50,21 +59,21 @@ app.post(
             return;
         }
         const inputFilePath = file.path;
-        const outputFilePath = path.join(__dirname, 'converted', `conv-${file.name}`);
+        const convName = `conv-${file.name}`;
+        const outputFilePath = path.join(__dirname, 'converted', convName);
         try {
-            const process = new FFMpegProgress(['-i', inputFilePath,'-c:v', 'h264',  outputFilePath]);
-            // process.on('raw', ()=>{
-            //     console.log("Raw");
-            // });
-    
-            // process.once('details', (details) => console.log(JSON.stringify(details)));
+            prgsMap[convName] = 0;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({video: convName});
 
-            process.on('progress', (progress) => console.log(progress.frame));
+            const process = new FFMpegProgress(['-i', inputFilePath,'-c:v', 'h264',  outputFilePath]);    
+
+            process.on('progress', (progress) => {
+                prgsMap[convName] = progress.progress * 10000;
+            });
 
             process.once('end', ()=>{
-                console.log("End")
-                res.setHeader('Content-Type', 'video/mp4');
-                res.sendFile(outputFilePath);
+                prgsMap[convName] = "End";
             });
             
         } catch (e) {
