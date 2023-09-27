@@ -69,7 +69,7 @@ app.post(
             const process = new FFMpegProgress(['-i', inputFilePath,'-c:v', 'h264',  outputFilePath]);    
 
             process.on('progress', (progress) => {
-                prgsMap[convName] = progress.progress * 10000;
+                prgsMap[convName] = progress.progress * 100000;
             });
 
             process.once('end', ()=>{
