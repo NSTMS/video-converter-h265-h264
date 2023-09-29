@@ -1,0 +1,13 @@
+{
+  "name": "video-converter-h265-h264",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "backInstall": "cd backEnd && npm i",
+    "frontInstall": "cd frontEnd && npm i",
+    "install": "npm run backInstall && npm run frontInstall"
+  },
+  "author": "",
+  "license": "ISC"
+}
