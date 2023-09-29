@@ -90,7 +90,7 @@ app.post(
             });
 
             process.once('end', ()=>{
-                prgsMap[convName] = "End";
+                prgsMap[convName] = "100";
             });
             
         } catch (e) {
