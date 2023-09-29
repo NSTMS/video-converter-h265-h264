@@ -9,7 +9,6 @@ const fs = require("fs");
 const path = require("path");
 
 const cors = require("cors");
-const uploadPath = path.join(__dirname, "public");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(formidableMiddleware({
