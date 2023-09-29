@@ -60,7 +60,24 @@ app.post(
         }
         const inputFilePath = file.path;
         const convName = `conv-${file.name}`;
-        const outputFilePath = path.join(__dirname, 'converted', convName);
+
+        const outputFolder = path.join(__dirname, 'converted');
+
+        let outputFilePath, i = 0;
+        do{
+            let _convName = convName;
+
+            if(i > 0){
+                _convName = _convName.split('.');
+                _convName[_convName.length - 2] += `(${i})`;
+                _convName = _convName.join('.');
+            }
+
+            outputFilePath = path.join(outputFolder, _convName);
+            i++;
+        }while(fs.existsSync(outputFilePath))
+         
+
         try {
             prgsMap[convName] = 0;
             res.setHeader('Content-Type', 'application/json');
