@@ -68,7 +68,7 @@ Aby uruchomić projekt, wykonaj następujące kroki:
    ```
    
 
-   Aplikacja będzie dostępna pod adresem http://localhost:3001.
+   Aplikacja będzie dostępna pod adresem http://localhost:5173.
 
 ## Uwagi końcowe
 
