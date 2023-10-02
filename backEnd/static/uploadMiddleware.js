@@ -12,7 +12,7 @@ module.exports = (uploadDir) => {
           {
             event: "fileBegin",
             action: (_, __, ___, name, file) => {
-              file.path = path.join(__dirname, "public", file.name);
+              file.path = path.join(uploadDir, file.name);
             },
           },
         ]
