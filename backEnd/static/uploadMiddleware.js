@@ -1,13 +1,11 @@
 const formidableMiddleware = require("express-formidable");
 const path = require("path");
 
-const uploadPath = path.join(__dirname, "public");
-
-module.exports = () => {
+module.exports = (uploadDir) => {
     return formidableMiddleware(
         {
           encoding: "utf-8",
-          uploadDir: uploadPath,
+          uploadDir: uploadDir,
           keepExtensions: true,
         },
         [

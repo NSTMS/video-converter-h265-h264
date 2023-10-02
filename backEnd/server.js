@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 let prgsMap = new Map();
+const uploadPath = path.join(__dirname, "public");
 
 app.get("/vid/:video", (req, res) => {
   const { video } = req.params;
@@ -37,7 +38,7 @@ app.get("/prg/:video", (req, res) => {
 
 app.post(
   "/api/upload",
-  uploadMiddleware(),
+  uploadMiddleware(uploadPath),
   function (req, res) {
     const file = req.files.file;
     if (!file || !file.name) {
