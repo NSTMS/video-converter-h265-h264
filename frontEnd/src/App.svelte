@@ -1,4 +1,5 @@
 <script>
+    import "./app.css";
   let source;
   let video;
 
@@ -44,16 +45,23 @@
       });
   }
 </script>
+<div class="mx-auto flex flex-col text-center w-screen h-screen bg-black text-white">
+  <h1 class="m-10 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl">video converter</h1>
+  <div class="grid grid-cols-2 gap-4 place-items-center p-10">
+    <div class="input-file-and-progres-bar">
+      <input type="file" on:change={uploadFile} id="input" name="input" style="display:none;"/>
+      <label for="input" class="button">bierzemy plik</label>
+      <div class="progress-wrapper">
+        <div class="progress-bar" style="width: {percentage}; height: 20px;" />
+        <p class="progress-text">{percentage}</p>
+      </div>
+    </div>
+  <video bind:this={video} width="500" controls>
+    <source bind:this={source} type="video/mp4" />
+  </video>
+  </div>
 
-<input type="file" on:change={uploadFile} />
-<div class="progress-wrapper">
-  <div class="progress-bar" style="width: {percentage}; height: 20px;" />
-  <p class="progress-text">{percentage}</p>
 </div>
-<video bind:this={video} width="500" controls>
-  <source bind:this={source} type="video/mp4" />
-</video>
-
 <style>
   .progress-wrapper {
     width: 300px;
