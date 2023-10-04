@@ -9,7 +9,14 @@
     status = false,
     vidName;
 
-  let percentage = "";
+  let percentage = "",
+      value = 0;
+
+  const animTillValue = ()=>{
+    if(prgsBar.value >= value) return;
+    prgsBar.value += 10;
+    setTimeout(animTillValue, 10);
+  }
 
   const prgCheck = (vid) => {
     fetch("http://localhost:3001/prg/" + vid)
@@ -17,12 +24,13 @@
       .then((snap) => {
         percentage = Number(snap.perc).toFixed(2) + "%";
         if (percentage != "100.00%") {    
-          prgsBar.value = snap.perc.toFixed(2) * 100;
+          value = snap.perc.toFixed(2) * 100;
           setTimeout(() => prgCheck(vid), 1000);
         } else {
-          prgsBar.value = 10000;
+          value = 10000;
           getVid(vid);
         }
+        animTillValue();
       });
   };
 
