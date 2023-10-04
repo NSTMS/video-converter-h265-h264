@@ -22,6 +22,24 @@ app.use(cors());
 let prgsMap = new Map();
 const uploadPath = path.join(__dirname, "public");
 
+app.get("/vids",(req,res)=>{
+  let vids = [];
+  const directoryPath = path.join(__dirname, "converted");
+  fs.readdir(directoryPath, function (err, files) {
+    if (err) {
+        return console.log('Unable to scan directory: ' + err);
+    } 
+    files.forEach(function (file) {
+        vids.push(file)
+        console.log(file); 
+    });
+    console.log(vids)
+    res.setHeader("Content-Type", "application/json");
+    res.json({vids})
+  });
+})
+
+
 app.get("/vid/:video", (req, res) => {
   const { video } = req.params;
 
