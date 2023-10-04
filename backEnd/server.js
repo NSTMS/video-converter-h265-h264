@@ -11,31 +11,17 @@ const path = require("path");
 const cors = require("cors");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(formidableMiddleware({
-//     encoding: "utf-8",
-//     keepExtensions: true,
-//     uploadDir: path.join(__dirname, "public")
-// }));
-
 app.use(cors());
 
 let prgsMap = new Map();
 const uploadPath = path.join(__dirname, "public");
 
 app.get("/vids",(req,res)=>{
-  let vids = [];
   const directoryPath = path.join(__dirname, "converted");
   fs.readdir(directoryPath, function (err, files) {
-    if (err) {
-        return console.log('Unable to scan directory: ' + err);
-    } 
-    files.forEach(function (file) {
-        vids.push(file)
-        console.log(file); 
-    });
-    console.log(vids)
+    if (err) return console.log('Unable to scan directory: ' + err);
     res.setHeader("Content-Type", "application/json");
-    res.json({vids})
+    res.json({vids: files})
   });
 })
 

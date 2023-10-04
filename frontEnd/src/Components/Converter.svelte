@@ -5,6 +5,7 @@
   let source;
   let video,
     vidFile,
+    prgsBar,
     status = false,
     vidName;
 
@@ -15,9 +16,11 @@
       .then((res) => res.json())
       .then((snap) => {
         percentage = Number(snap.perc).toFixed(2) + "%";
-        if (percentage != "100.00%") {
+        if (percentage != "100.00%") {    
+          prgsBar.value = snap.perc.toFixed(2) * 100;
           setTimeout(() => prgCheck(vid), 1000);
         } else {
+          prgsBar.value = 10000;
           getVid(vid);
         }
       });
@@ -72,7 +75,7 @@
         </div>
       </div>
       <div class="progress-wrapper">
-        <!-- TODO: Progress-bar -->
+        <progress bind:this={prgsBar} value="0" max="10000"/>
         <p class="progress-text">{percentage}</p>
       </div>
     </div>
