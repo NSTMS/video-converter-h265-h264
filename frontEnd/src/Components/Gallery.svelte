@@ -23,4 +23,7 @@
     {#each videos as video,i}
         <h2>{i+1}. {video}</h2>
     {/each}
+    {#if videos.length == 0}
+        <p>no converted videos</p>
+    {/if}
 </main>
