@@ -32,10 +32,25 @@
 </div>
 <main class="gallery">
     <a href="#" class="hidden" bind:this={hiddenDownload}><p>Hidden Dowload Btw.</p></a>
+    <div>
+        
+
     {#each videos as video,i}
-        <h2 on:click={()=>fetchVid(video)}>{i+1}. {video}</h2>
+        <div class="flex gap-3 align-middle justify-center">
+            <h2>{i+1}. {video}</h2>
+            <div on:click={()=>fetchVid(video)} class="cursor-pointer grid place-items-center">
+                <svg
+                class="fill-current w-4 h-4 mr-2"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                ><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" /></svg
+            >
+            </div>
+        </div>
     {/each}
+
     {#if videos.length == 0}
         <p>no converted videos</p>
     {/if}
+</div>
 </main>

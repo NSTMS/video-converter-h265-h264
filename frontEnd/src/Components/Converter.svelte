@@ -83,7 +83,7 @@
         </div>
       </div>
       <div class="progress-wrapper">
-        <progress bind:this={prgsBar} value="0" max="10000"/>
+        <progress bind:this={prgsBar} value="0" max="10000" class="bg-gray-800 accent-gray-800 rounded-lg"/>
         <p class="progress-text">{percentage}</p>
       </div>
     </div>
@@ -135,3 +135,17 @@
     {/if}
   </div>
 </div>
+<style>
+  progress{
+    border-radius: 14px;
+  }
+  progress::-webkit-progress-bar {
+    --tw-bg-opacity: 1;
+    background-color: rgb(209 213 219 / var(--tw-bg-opacity));
+}
+progress::-webkit-progress-value {
+   
+  --tw-bg-opacity: 1;
+    background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+}
+</style>
