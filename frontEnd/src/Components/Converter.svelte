@@ -82,10 +82,12 @@
           </Link>
         </div>
       </div>
+      {#if percentage}
       <div class="progress-wrapper">
         <progress bind:this={prgsBar} value="0" max="10000" class="bg-gray-800 accent-gray-800 rounded-lg"/>
         <p class="progress-text">{percentage}</p>
       </div>
+      {/if}
     </div>
   {/if}
 
