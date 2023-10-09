@@ -1,4 +1,5 @@
 <script>
+	import { connecion } from './../static/connection.js';
   import Input from "./Input.svelte";
   import { Link } from "svelte-routing";
   import "../app.css";
@@ -17,9 +18,9 @@
     prgsBar.value += 10;
     setTimeout(animTillValue, 10);
   }
-
+  const link = `${connecion.protocole}://${connecion.host}`
   const prgCheck = (vid) => {
-    fetch("http://localhost:3001/prg/" + vid)
+    fetch(`${link}/prg/` + vid)
       .then((res) => res.json())
       .then((snap) => {
         percentage = Number(snap.perc).toFixed(2) + "%";
@@ -35,7 +36,7 @@
   };
 
   const getVid = (vid) => {
-    fetch("http://localhost:3001/vid/" + vid)
+    fetch(`${link}/vid/` + vid)
       .then((res) => res.blob())
       .then((snap) => {
         status = true;
@@ -52,7 +53,7 @@
     status = false;
     const data = new FormData();
     data.append("file", event.target.files[0]);
-    fetch("http://localhost:3001/api/upload", {
+    fetch(`${link}/api/upload`, {
       method: "POST",
       body: data,
     })
