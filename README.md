@@ -1,75 +1,47 @@
-# Dokumentacja projektu video-converter-h265-h264
+# Svelte + TS + Vite
 
-## Opis projektu
+This template should help get you started developing with Svelte and TypeScript in Vite.
 
-*video-converter-h265-h264* to aplikacja do konwertowania plików wideo z formatu H.265 do H.264. Aplikacja składa się z dwóch głównych komponentów: front-end napisany w Svelte oraz back-end oparty na Express. Do przetwarzania plików wideo wykorzystuje narzędzie FFMpeg.
+## Recommended IDE Setup
 
-## Technologie użyte w projekcie
+[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
 
-- Front-end: Svelte
-- Back-end: Express.js
-- Narzędzie do konwersji wideo: FFMpeg
+## Need an official Svelte framework?
 
-## Struktura projektu
+Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
 
-Projekt składa się z dwóch głównych części: front-end i back-end.
+## Technical considerations
 
-### Front-end (Svelte)
+**Why use this over SvelteKit?**
 
-Front-end projektu znajduje się w folderze svelte-frontend. Tutaj znajdziesz pliki związane z interfejsem użytkownika.
+- It brings its own routing solution which might not be preferable for some users.
+- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
 
-### Back-end (Express.js)
+This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
 
-Back-end projektu znajduje się w głównym pliku server.js. Oto kluczowe elementy back-endu:
+Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
 
-#### Middlewares
+**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
 
-- express-formidable: Middleware do obsługi przesyłania plików.
-- cors: Middleware umożliwiający żądania z różnych domen.
+Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
 
-#### Obsługa plików wideo
+**Why include `.vscode/extensions.json`?**
 
-- Aplikacja umożliwia przesyłanie plików wideo na serwer i konwertowanie ich z H.265 na H.264.
-- Pliki wideo są przesyłane do folderu public i konwertowane do folderu converted.
+Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
 
-#### Obsługa progresu konwersji
+**Why enable `allowJs` in the TS template?**
 
-- Używamy biblioteki ffmpeg-progress-wrapper, aby monitorować postęp konwersji plików wideo.
+While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
 
-#### API endpoints
+**Why is HMR not preserving my local component state?**
 
-- GET /vid/:video: Zwraca przekonwertowany plik wideo o nazwie video w formacie MP4.
-- GET /prg/:video: Zwraca postęp konwersji pliku video w formacie JSON.
-- POST /api/upload: Przesyła plik wideo na serwer i rozpoczyna proces konwersji.
+HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
 
-#### Serwowanie aplikacji
+If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
 
-Aplikacja jest uruchamiana na porcie 3001.
-
-## Instrukcje uruchomienia
-
-Aby uruchomić projekt, wykonaj następujące kroki:
-
-1. Upewnij się, że masz zainstalowanego Node.js na swoim systemie.
-
-2. Przejdź do głównego katalogu projektu.
-
-3. Zainstaluj zależności, wykonując polecenie:
-
-   ```
-   npm install
-   ```
-   
-
-4. Uruchom aplikację, wykonując polecenie:
-
-   ```
-    npm start
-   ```
-   
-
-   Aplikacja będzie dostępna pod adresem http://localhost:5173.
-
-## Uwagi końcowe
-
-Projekt *video-converter-h265-h264* umożliwia przesyłanie plików wideo, konwersję ich z H.265 na H.264 oraz monitorowanie postępu konwersji. Jest to przykład zastosowania narzędzia FFMpeg w połączeniu z technologią Svelte i Express.js do tworzenia prostego narzędzia do konwersji wideo. Projekt można rozbudować o dodatkowe funkcje i interfejs użytkownika w przyszłości.
+```ts
+// store.ts
+// An extremely simple external store
+import { writable } from 'svelte/store'
+export default writable(0)
+```
