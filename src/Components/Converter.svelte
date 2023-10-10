@@ -13,6 +13,8 @@
   let percentage = "",
       value = 0;
 
+  let error = false;
+
   const animTillValue = ()=>{
     if(prgsBar.value >= value) return;
     prgsBar.value += 10;
@@ -32,7 +34,8 @@
           getVid(vid);
         }
         animTillValue();
-      });
+      })
+      
   };
 
   const getVid = (vid) => {
@@ -63,10 +66,11 @@
       })
       .catch((err) => {
         console.log("err: ", err);
+        error = true;
       });
   }
 </script>
-
+{#if !error}
 <div class="flex flex-col gap-4 justify-center p-10">
   {#if !status}
     <div class="flex flex-col gap-4 justify-center mx-auto">
@@ -138,6 +142,10 @@
     {/if}
   </div>
 </div>
+{:else}
+<h1 class="mx-auto w-screen">Allow webside for unsecure connections</h1>
+{/if}
+
 <style>
   progress{
     border-radius: 14px;
