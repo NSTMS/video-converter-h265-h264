@@ -1,10 +1,11 @@
 <script>
     import { Link } from "svelte-routing";
+    import { connecion } from "../static/connection";
     let videos = [];
     let hiddenDownload;
-
+    const link = `${connecion.protocole}://${connecion.host}`
     const getVids = () => {
-        fetch("http://localhost:3001/vids")
+        fetch(`${link}/vids`)
         .then((res) => res.json())
         .then((snap) => {
             videos = [...snap.vids];
@@ -14,7 +15,7 @@
     getVids();
 
     const fetchVid = (vid)=>{
-        fetch("http://localhost:3001/vid/"+vid)
+        fetch(`${link}/vid/`+vid)
         .then((res) => res.blob())
         .then((snap) => {
             hiddenDownload.href = URL.createObjectURL(snap);

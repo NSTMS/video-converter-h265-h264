@@ -143,7 +143,7 @@
   </div>
 </div>
 {:else}
-<h1>Allow webside for unsecure connections</h1>
+<h1 class="mx-auto w-screen">Allow webside for unsecure connections</h1>
 {/if}
 
 <style>
