@@ -5,7 +5,8 @@
     "express-formidable": "^1.2.0",
     "ffmpeg-progress-wrapper": "^2.0.1",
     "fluent-ffmpeg": "^2.1.2",
-    "formidable": "^3.5.1"
+    "formidable": "^3.5.1",
+    "nedb": "^1.8.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

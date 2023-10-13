@@ -8,6 +8,9 @@ const { FFMpegProgress } = require("ffmpeg-progress-wrapper");
 const fs = require("fs");
 const path = require("path");
 
+const nedb = require("nedb");
+let usersdb;
+
 const cors = require("cors");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -16,7 +19,32 @@ app.use(cors());
 let prgsMap = new Map();
 const uploadPath = path.join(__dirname, "public");
 
-app.get("/vids",(req,res)=>{
+app.post("/register", (req, res)=>{
+  const {login, password} = req.body;
+  res.setHeader("Content-Type", "application/json");
+
+  usersdb.findOne({login}, (err, doc)=>{
+    if(err) return res.json({ok: false, msg: err});
+    if(doc) return res.json({ok: false, msg: "Login already in use"});
+  
+    usersdb.insert({login, password}, (err, newDoc)=>{
+      if(err) return res.json({ok: false, msg: err});
+      res.json({ok: true, id: newDoc._id});
+    })
+  })
+})
+
+app.post("/login", (req, res)=>{
+  const {login, password} = req.body;
+  res.setHeader("Content-Type", "application/json");
+
+  usersdb.findOne({login, password}, (err, doc)=>{
+    if(!doc) return res.json({ok: false, msg: "Incorrect user data"});
+    res.json({ok: true, id: doc._id});
+  })
+})
+
+app.get("/vids",(req, res)=>{
   const directoryPath = path.join(__dirname, "converted");
   fs.readdir(directoryPath, function (err, files) {
     if (err) return console.log('Unable to scan directory: ' + err);
@@ -25,7 +53,7 @@ app.get("/vids",(req,res)=>{
       const vidStats = fs.statSync(path.join(__dirname, "converted", video));
       return {name: video, size: vidStats.size};
     })
-    
+
     res.setHeader("Content-Type", "application/json");
     res.json({vids})
   });
@@ -101,16 +129,19 @@ app.post(
   }
 );
 
+const checkMkDir = (filePath)=>{
+  if (!fs.existsSync(filePath)) {
+    fs.mkdir(filePath, (err) => {
+      if (err) throw err;
+    });
+  }
+}
+
+const dirs = ["public", "converted", "data"];
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
-  if (!fs.existsSync(path.join(__dirname, "public"))) {
-    fs.mkdir(path.join(__dirname, "public"), (err) => {
-      if (err) throw err;
-    });
-  }
-  if (!fs.existsSync(path.join(__dirname, "converted"))) {
-    fs.mkdir(path.join(__dirname, "converted"), (err) => {
-      if (err) throw err;
-    });
-  }
+  dirs.forEach(dir=>checkMkDir(path.join(__dirname, dir)));
+
+  usersdb = new nedb(path.join(__dirname, "data", "users.db"));
+  usersdb.loadDatabase();
 });
