@@ -20,8 +20,14 @@ app.get("/vids",(req,res)=>{
   const directoryPath = path.join(__dirname, "converted");
   fs.readdir(directoryPath, function (err, files) {
     if (err) return console.log('Unable to scan directory: ' + err);
+
+    const vids = files.map(video=>{
+      const vidStats = fs.statSync(path.join(__dirname, "converted", video));
+      return {name: video, size: vidStats.size};
+    })
+    
     res.setHeader("Content-Type", "application/json");
-    res.json({vids: files})
+    res.json({vids})
   });
 })
 
