@@ -1,10 +1,25 @@
 <script>
+// @ts-nocheck
+
 	import { connecion } from './../static/connection.js';
   import Input from "./Input.svelte";
   import { Link } from "svelte-routing";
+  import { onMount } from 'svelte';
+  import { isAuthenticated } from '../auth.js';
+  let vis = false;
+    onMount(()=>{
+        const isAuth = isAuthenticated();
+        if(!isAuth){
+          window.location.pathname = "/";
+        }
+        else{
+          vis = true;
+        }
+    })
+
   import "../app.css";
   let source;
-  let video,
+  let video,  
     vidFile,
     prgsBar,
     status = false,
@@ -67,6 +82,7 @@
   }
 </script>
 
+{#if vis}
 <div class="flex flex-col gap-4 justify-center p-10">
   {#if !status}
     <div class="flex flex-col gap-4 justify-center mx-auto">
@@ -138,6 +154,8 @@
     {/if}
   </div>
 </div>
+{/if}
+
 <style>
   progress{
     border-radius: 14px;

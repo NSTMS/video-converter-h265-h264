@@ -1,7 +1,22 @@
 <script>
+// @ts-nocheck
+
+    import { onMount } from "svelte";
     import { Link } from "svelte-routing";
+    import { isAuthenticated } from "../auth";
     let videos = [];
     let hiddenDownload;
+    let vis = false;
+    onMount(()=>{
+        const isAuth = isAuthenticated();
+        if(!isAuth){
+          window.location.pathname = "/";
+        }
+        else{
+          vis = true;
+        }
+    })
+
 
     const getVids = () => {
         fetch("http://localhost:3001/vids")
@@ -23,6 +38,7 @@
         });
     }
 </script>
+{#if vis}
 <div class="mx-auto flex justify-center align-middle g-8 p-10">
     <Link
         to={""}
@@ -54,3 +70,4 @@
     {/if}
 </div>
 </main>
+{/if}
