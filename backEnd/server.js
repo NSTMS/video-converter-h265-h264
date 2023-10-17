@@ -12,8 +12,9 @@ const nedb = require("nedb");
 let usersdb;
 
 const cors = require("cors");
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json()); 
 app.use(cors());
 
 let prgsMap = new Map();
@@ -21,6 +22,7 @@ const uploadPath = path.join(__dirname, "public");
 
 app.post("/register", (req, res)=>{
   const {login, password} = req.body;
+  console.log(req.body)
   res.setHeader("Content-Type", "application/json");
 
   usersdb.findOne({login}, (err, doc)=>{
@@ -29,6 +31,9 @@ app.post("/register", (req, res)=>{
   
     usersdb.insert({login, password}, (err, newDoc)=>{
       if(err) return res.json({ok: false, msg: err});
+      console.log("registered", newDoc);
+      console.log("login", login);
+      fs.mkdirSync(path.join(__dirname, "converted", login));
       res.json({ok: true, id: newDoc._id});
     })
   })
@@ -40,12 +45,15 @@ app.post("/login", (req, res)=>{
 
   usersdb.findOne({login, password}, (err, doc)=>{
     if(!doc) return res.json({ok: false, msg: "Incorrect user data"});
+    if (!fs.existsSync(directoryPath)){
+      fs.mkdirSync(path.join(__dirname, "converted", login));
+    }
     res.json({ok: true, id: doc._id});
   })
 })
 
 app.get("/vids",(req, res)=>{
-  const directoryPath = path.join(__dirname, "converted");
+  const directoryPath = path.join(__dirname, "converted", req.query.login);
   fs.readdir(directoryPath, function (err, files) {
     if (err) return console.log('Unable to scan directory: ' + err);
 
@@ -62,9 +70,9 @@ app.get("/vids",(req, res)=>{
 
 app.get("/vid/:video", (req, res) => {
   const { video } = req.params;
-
+  const { login } = req.query
   res.setHeader("Content-Type", "video/mp4");
-  res.sendFile(path.join(__dirname, "converted", video));
+  res.sendFile(path.join(__dirname, "converted", login, video));
 });
 
 app.get("/prg/:video", (req, res) => {
@@ -79,12 +87,13 @@ app.post(
   uploadMiddleware(uploadPath),
   function (req, res) {
     const file = req.files.file;
+    const { login } = req.query
     if (!file || !file.name) {
       res.sendStatus(400);
       return;
     }
     const inputFilePath = file.path;
-    const convName = `conv-${file.name}`;
+    const convName = path.join(login, `conv-${file.name}`);
 
     const outputFolder = path.join(__dirname, "converted");
 
@@ -104,7 +113,7 @@ app.post(
     } while (fs.existsSync(outputFilePath));
 
     try {
-      prgsMap[convName] = 0;
+      prgsMap[encodeURIComponent(convName)] = 0;
       res.setHeader("Content-Type", "application/json");
       res.json({ video: convName });
 
@@ -117,11 +126,11 @@ app.post(
       ]);
 
       process.on("progress", (progress) => {
-        prgsMap[convName] = progress.progress * 100000;
+        prgsMap[encodeURIComponent(convName)] = progress.progress * 100000;
       });
 
       process.once("end", () => {
-        prgsMap[convName] = "100";
+        prgsMap[encodeURIComponent(convName)] = "100";
       });
     } catch (e) {
       console.log(e);
