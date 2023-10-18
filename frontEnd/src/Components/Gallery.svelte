@@ -7,6 +7,7 @@
     let videos = [];
     let hiddenDownload;
     let vis = false;
+    let login;
     onMount(()=>{
         const isAuth = isAuthenticated();
         if(!isAuth){
@@ -14,28 +15,35 @@
         }
         else{
           vis = true;
+          login = isAuth;
+          console.log(login, `http://localhost:3001/vids/${login}`);
+          getVids();
         }
     })
 
 
     const getVids = () => {
-        fetch("http://localhost:3001/vids")
+        fetch(`http://localhost:3001/vids?login=${login}`)
         .then((res) => res.json())
         .then((snap) => {
             videos = [...snap.vids];
             console.log(videos)
         });
     };
-    getVids();
+    
 
     const fetchVid = (vid)=>{
-        fetch("http://localhost:3001/vid/"+vid)
+        fetch(`http://localhost:3001/vid/${vid}?login=${login}`)
         .then((res) => res.blob())
         .then((snap) => {
             hiddenDownload.href = URL.createObjectURL(snap);
             hiddenDownload.download = vid;
             hiddenDownload.click();
         });
+    }
+
+    const sizeInMb = (size)=>{
+        return `${(size / 1024 / 1024).toFixed(2)} Mb`
     }
 </script>
 {#if vis}
@@ -53,7 +61,7 @@
 
     {#each videos as video,i}
         <div class="flex gap-3 align-middle justify-center">
-            <h2>{i+1}. {video}</h2>
+            <h2>{i+1}. {video.name}</h2>
             <div on:click={()=>fetchVid(video)} class="cursor-pointer grid place-items-center">
                 <svg
                 class="fill-current w-4 h-4 mr-2"
@@ -61,6 +69,7 @@
                 viewBox="0 0 20 20"
                 ><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" /></svg
             >
+            <p>{sizeInMb(video.size)}</p>
             </div>
         </div>
     {/each}

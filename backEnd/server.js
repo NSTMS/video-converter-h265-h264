@@ -51,12 +51,13 @@ app.post("/login", (req, res)=>{
 })
 
 app.get("/vids",(req, res)=>{
-  const directoryPath = path.join(__dirname, "converted", req.query.login);
-  fs.readdir(directoryPath, function (err, files) {
+  const {login} = req.query;
+  const directoryPath = path.join(__dirname, "converted", login);
+  fs.readdir(directoryPath, (err, files)=>{
     if (err) return console.log('Unable to scan directory: ' + err);
 
     const vids = files.map(video=>{
-      const vidStats = fs.statSync(path.join(__dirname, "converted", video));
+      const vidStats = fs.statSync(path.join(directoryPath, video));
       return {name: video, size: vidStats.size};
     })
 
