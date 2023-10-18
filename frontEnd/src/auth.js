@@ -1,4 +1,4 @@
- function hashCode(text) {
+ export function hashCode(text) {
   var hash = 0,
     i, chr;
   if (text.length === 0) return hash;
@@ -11,12 +11,15 @@
 }
 
 export function isAuthenticated() {
-    const isAuth = window.sessionStorage.getItem('auth') || false;
-    return isAuth;
+    const isAuth = window.sessionStorage.getItem('auth');
+    if(!isAuth) return false;
+
+    const [login, _] = isAuth.split(" ");
+    return login;
   }
   
   export function authenticateUser(login,password){
-    window.sessionStorage.setItem("auth",hashCode(login) + "_" + hashCode(password))
+    window.sessionStorage.setItem("auth",login + " " + hashCode(password))
     return true;
   }
 

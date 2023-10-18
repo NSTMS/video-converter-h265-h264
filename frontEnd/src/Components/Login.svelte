@@ -4,7 +4,7 @@
     import { onMount } from "svelte";
 
 // @ts-nocheck
-    import { authenticateUser, isAuthenticated } from "../auth";
+    import { authenticateUser, hashCode, isAuthenticated } from "../auth";
     import { navigate,Link } from "svelte-routing";
     let login = "";
     let password ="";
@@ -18,7 +18,10 @@
     const logUser = () =>{
         fetch("http://localhost:3001/login",{
             method: "POST",
-            body: JSON.stringify({"login" : login, "password" : password}),
+            body: JSON.stringify({"login" : login, "password" : hashCode(password)}),
+            headers: {
+                "Content-Type": "application/json",
+            }
         }).then(res => res.json()).then((servRes) =>{
             if(servRes.ok)
             {

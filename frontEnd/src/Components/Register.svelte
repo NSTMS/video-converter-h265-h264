@@ -3,7 +3,7 @@
 
     import { Link } from "svelte-routing";
     import { onMount } from "svelte";
-    import { authenticateUser, isAuthenticated } from "../auth";
+    import { authenticateUser, hashCode, isAuthenticated } from "../auth";
     let login = "";
     let password = "";
     let password2 = "";
@@ -26,7 +26,7 @@
 
         fetch("http://localhost:3001/register", {
             method: "POST",
-            body: JSON.stringify({ login: login, password: password }),
+            body: JSON.stringify({ login: login, password: hashCode(password) }),
             headers: {
                 "Content-Type": "application/json",
             },

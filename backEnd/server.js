@@ -22,7 +22,6 @@ const uploadPath = path.join(__dirname, "public");
 
 app.post("/register", (req, res)=>{
   const {login, password} = req.body;
-  console.log(req.body)
   res.setHeader("Content-Type", "application/json");
 
   usersdb.findOne({login}, (err, doc)=>{
@@ -31,8 +30,6 @@ app.post("/register", (req, res)=>{
   
     usersdb.insert({login, password}, (err, newDoc)=>{
       if(err) return res.json({ok: false, msg: err});
-      console.log("registered", newDoc);
-      console.log("login", login);
       fs.mkdirSync(path.join(__dirname, "converted", login));
       res.json({ok: true, id: newDoc._id});
     })
@@ -45,9 +42,10 @@ app.post("/login", (req, res)=>{
 
   usersdb.findOne({login, password}, (err, doc)=>{
     if(!doc) return res.json({ok: false, msg: "Incorrect user data"});
-    if (!fs.existsSync(directoryPath)){
-      fs.mkdirSync(path.join(__dirname, "converted", login));
-    }
+
+    const directoryPath = path.join(__dirname, "converted", login);
+    if (!fs.existsSync(directoryPath)) fs.mkdirSync(directoryPath);
+
     res.json({ok: true, id: doc._id});
   })
 })
@@ -87,20 +85,20 @@ app.post(
   uploadMiddleware(uploadPath),
   function (req, res) {
     const file = req.files.file;
-    const { login } = req.query
+    const { login } = req.fields;
     if (!file || !file.name) {
       res.sendStatus(400);
       return;
     }
     const inputFilePath = file.path;
-    const convName = path.join(login, `conv-${file.name}`);
+    const convName = `conv-${file.name}`;
 
-    const outputFolder = path.join(__dirname, "converted");
+    const outputFolder = path.join(__dirname, "converted" , login);
 
     let outputFilePath,
-      i = 0;
+      i = 0, _convName;
     do {
-      let _convName = convName;
+      _convName = convName;
 
       if (i > 0) {
         _convName = _convName.split(".");
@@ -113,9 +111,9 @@ app.post(
     } while (fs.existsSync(outputFilePath));
 
     try {
-      prgsMap[encodeURIComponent(convName)] = 0;
+      prgsMap[_convName] = 0;
       res.setHeader("Content-Type", "application/json");
-      res.json({ video: convName });
+      res.json({ video: _convName });
 
       const process = new FFMpegProgress([
         "-i",
@@ -126,11 +124,11 @@ app.post(
       ]);
 
       process.on("progress", (progress) => {
-        prgsMap[encodeURIComponent(convName)] = progress.progress * 100000;
+        prgsMap[_convName] = progress.progress * 100000;
       });
 
       process.once("end", () => {
-        prgsMap[encodeURIComponent(convName)] = "100";
+        prgsMap[_convName] = "100";
       });
     } catch (e) {
       console.log(e);

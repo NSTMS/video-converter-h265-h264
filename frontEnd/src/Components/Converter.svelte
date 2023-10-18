@@ -7,6 +7,7 @@
   import { onMount } from 'svelte';
   import { isAuthenticated } from '../auth.js';
   let vis = false;
+  let login;
     onMount(()=>{
         const isAuth = isAuthenticated();
         if(!isAuth){
@@ -14,6 +15,7 @@
         }
         else{
           vis = true;
+          login = isAuth;
         }
     })
 
@@ -51,7 +53,7 @@
   };
 
   const getVid = (vid) => {
-    fetch(`${link}/vid/` + vid)
+    fetch(`${link}/vid/${vid}?login=${login}`)
       .then((res) => res.blob())
       .then((snap) => {
         status = true;
@@ -68,12 +70,14 @@
     status = false;
     const data = new FormData();
     data.append("file", event.target.files[0]);
+    data.append("login", login);
     fetch(`${link}/api/upload`, {
       method: "POST",
       body: data,
     })
       .then((res) => res.json())
       .then((snap) => {
+        console.log(snap.video);
         prgCheck(snap.video);
       })
       .catch((err) => {
