@@ -62,7 +62,7 @@
     {#each videos as video,i}
         <div class="flex gap-3 align-middle justify-center">
             <h2>{i+1}. {video.name}</h2>
-            <div on:click={()=>fetchVid(video)} class="cursor-pointer grid place-items-center">
+            <div on:click={()=>fetchVid(video.name)} class="cursor-pointer grid place-items-center">
                 <svg
                 class="fill-current w-4 h-4 mr-2"
                 xmlns="http://www.w3.org/2000/svg"
