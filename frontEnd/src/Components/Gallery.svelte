@@ -3,19 +3,18 @@
 
     import { onMount } from "svelte";
     import { Link } from "svelte-routing";
-    import { isAuthenticated } from "../auth";
+    import { isAuthenticated, authenticated } from "../auth";
     let videos = [];
     let hiddenDownload;
     let vis = false;
     let login;
-    onMount(()=>{
-        const isAuth = isAuthenticated();
-        if(!isAuth){
+    onMount(()=>{    
+        if(!$authenticated){
           window.location.pathname = "/";
         }
         else{
           vis = true;
-          login = isAuth;
+          login = isAuthenticated();
           console.log(login, `http://localhost:3001/vids/${login}`);
           getVids();
         }

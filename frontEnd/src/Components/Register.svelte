@@ -34,8 +34,9 @@
             .then((res) => res.json())
             .then((servRes) => {
                 if (servRes.ok) {
-                    authenticateUser(login, password);
-                    window.location.pathname = "/converter";
+                    authenticateUser(login, password).then(()=>{
+                        window.location.pathname = "/converter";
+                    });
                 } else {
                     message = servRes.msg;
                     login = "";
@@ -60,7 +61,7 @@
         <div class="flex justify-center align-middle mx-auto gap-3">
             <p>PASSWORD:</p>
             <input
-                type="text"
+                type="password"
                 name="password"
                 id="password"
                 bind:value={password}
@@ -70,9 +71,9 @@
         <div class="flex justify-center align-middle mx-auto gap-3">
             <p>PASSWORD:</p>
             <input
-                type="text"
-                name="password"
-                id="password"
+                type="password"
+                name="password2"
+                id="password2"
                 bind:value={password2}
                 class="text-black"
             />

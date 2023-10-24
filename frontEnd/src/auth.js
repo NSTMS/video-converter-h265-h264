@@ -1,27 +1,30 @@
- export function hashCode(text) {
-  var hash = 0,
-    i, chr;
-  if (text.length === 0) return hash;
-  for (i = 0; i < text.length; i++) {
-    chr = text.charCodeAt(i);
-    hash = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
+import { writable } from "svelte/store";
+export const authenticated = writable(false);
+export async function hashCode(text) {
+  const msgBuffer = new TextEncoder().encode(text);                    
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
+export function logOut() {
+  window.sessionStorage.removeItem("auth");
+  authenticated.set(false);
+  window.location.reload();
 }
 
 export function isAuthenticated() {
-    const isAuth = window.sessionStorage.getItem('auth');
-    if(!isAuth) return false;
+  const isAuth = window.sessionStorage.getItem('auth');
+  if (!isAuth) return false;
 
-    const [login, _] = isAuth.split(" ");
-    return login;
-  }
-  
-  export function authenticateUser(login,password){
-    window.sessionStorage.setItem("auth",login + " " + hashCode(password))
-    return true;
-  }
+  const [login, _] = isAuth.split(" ");
+  authenticated.set(true);
+  return login;
+}
 
-
-  
+export async function authenticateUser(login, password) {
+  const pass = await hashCode(password);
+  window.sessionStorage.setItem("auth", login + " " + pass)
+  return true;
+}

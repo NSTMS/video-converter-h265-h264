@@ -1,6 +1,6 @@
 <script>
   // @ts-nocheck
-  import { isAuthenticated } from "./auth.js";
+  import { isAuthenticated, authenticated } from "./auth.js";
 
   import { Router, Route,navigate } from "svelte-routing";
   import { onMount } from "svelte";
@@ -11,16 +11,21 @@
   import Register from "./Components/Register.svelte";
   export let url = "";
 
-  let authenticated = false;
   const ALLOWED_ROUTES = ["/", "/gallery", "/register", "/converter"];
   onMount(() => {
-    authenticated = isAuthenticated();
+    isAuthenticated();
     if (!ALLOWED_ROUTES.includes(window.location.pathname)) {
       window.location.pathname = "/"
     }
+    if(!$authenticated && (window.location.pathname != "/register" && window.location.pathname != "/login" )){
+      navigate("/");
+    }
+    authenticated.subscribe((val) => {
+      if(!val && (window.location.pathname != "/register" && window.location.pathname != "/login" )){
+      navigate("/");
+    }
+    });
   });
-  console.log(window.location.pathname)
-
 </script>
 
 <div

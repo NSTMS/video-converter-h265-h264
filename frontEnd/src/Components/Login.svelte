@@ -25,9 +25,10 @@
         }).then(res => res.json()).then((servRes) =>{
             if(servRes.ok)
             {
-                authenticateUser(login, password);
-                navigate("/converter")
-            }
+                authenticateUser(login, password).then(()=>{
+                    navigate("/converter");
+                });
+            }       
             else{
                 message = servRes.msg;
                 login = ""
