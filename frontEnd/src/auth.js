@@ -18,13 +18,13 @@ export function isAuthenticated() {
   const isAuth = window.sessionStorage.getItem('auth');
   if (!isAuth) return false;
 
-  const [login, _] = isAuth.split(" ");
+  const [login] = isAuth.split(" ");
   authenticated.set(true);
   return login;
 }
 
 export async function authenticateUser(login, password) {
   const pass = await hashCode(password);
-  window.sessionStorage.setItem("auth", login + " " + pass)
+  window.sessionStorage.setItem("auth", login + " ?jsgspt? " + pass)
   return true;
 }
