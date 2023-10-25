@@ -15,10 +15,11 @@
         if(isAuth) window.location.pathname = "converter";
     })
 
-    const logUser = () =>{
+    const logUser = async() =>{
+        const pasw = await hashCode(password);
         fetch("http://localhost:3001/login",{
             method: "POST",
-            body: JSON.stringify({"login" : login, "password" : hashCode(password)}),
+            body: JSON.stringify({"login" : login, "password" : pasw}),
             headers: {
                 "Content-Type": "application/json",
             }

@@ -14,17 +14,20 @@
     });
     const registerUser = async() => {
         message = "";
-        const array = ["\\","/"];
+        const array = ["\\","/", " ", "?", "\"", "\'"];
         const exTrim = (pass)=>{
             pass = pass.trim();
             array.forEach(ch=>{
-                pass = pass.replace(ch,"");
+                pass = pass.replaceAll(ch,"");
             })
             return pass;
         }
         if (password != password2) message = "hasła nie są takie same";
         else if (password.length < 6) message = "hasło musi mieć co najmniej 6 znaków";
-        else if(login != exTrim(login)) message = "login zawiera znaki nie dozwolone takie jak spacja";         
+        else if(login != exTrim(login)) {
+            message = "login zawiera znaki nie dozwolone takie jak spacja";
+            login = exTrim(login);
+        }         
         else if (login.trim().length == 0 || password.trim().length == 0)  message = "login i hasło muszą zawierać znaki";
             
         if(message) return;
