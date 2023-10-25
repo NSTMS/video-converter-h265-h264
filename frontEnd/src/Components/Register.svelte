@@ -12,21 +12,26 @@
         const isAuth = isAuthenticated();
         if (isAuth) window.location.pathname = "converter";
     });
-    const registerUser = () => {
-        if (password != password2) {
-            message = "hasła nie są takie same";
-            return;
-        } else if (password.length < 6) {
-            message = "hasło musi mieć co najmniej 6 znaków";
-            return;
-        } else if (login.trim().length == 0 || password.trim().length == 0) {
-            message = "login i hasło muszą zawierać znaki";
-            return;
+    const registerUser = async() => {
+        message = "";
+        const array = ["\\","/"];
+        const exTrim = (pass)=>{
+            pass = pass.trim();
+            array.forEach(ch=>{
+                pass = pass.replace(ch,"");
+            })
+            return pass;
         }
-
+        if (password != password2) message = "hasła nie są takie same";
+        else if (password.length < 6) message = "hasło musi mieć co najmniej 6 znaków";
+        else if(login != exTrim(login)) message = "login zawiera znaki nie dozwolone takie jak spacja";         
+        else if (login.trim().length == 0 || password.trim().length == 0)  message = "login i hasło muszą zawierać znaki";
+            
+        if(message) return;
+        const pasw = await hashCode(password);
         fetch("http://localhost:3001/register", {
             method: "POST",
-            body: JSON.stringify({ login: login, password: hashCode(password) }),
+            body: JSON.stringify({ login: login, password: pasw}),
             headers: {
                 "Content-Type": "application/json",
             },
