@@ -1,5 +1,4 @@
 export const connecion = {
     protocole: "http",
-    host: "localhost:3001",
-    
+    host: "jansocha.hopto.org:3001", 
 }
