@@ -15,10 +15,6 @@
     } else {
       vis = true;
       login = isAuthenticated();
-      console.log(
-        login,
-        `${connecion.protocole}://${connecion.host}/vids/${login}`
-      );
       getVids();
     }
   });
@@ -59,13 +55,13 @@
     </Link>
   </div>
   <main class="gallery">
-    <a href="#" class="hidden" bind:this={hiddenDownload}
-      ><p>Hidden Dowload Btw.</p></a
-    >
+    <a href="#" class="hidden" bind:this={hiddenDownload}>
+      <p>Hidden Dowload Btw.</p>
+    </a>
     <div>
       {#each videos as video, i}
         <div class="flex gap-3 align-middle justify-center">
-          <h2>{i + 1}. {video.name}</h2>
+          <Link to={`/gallery/${video.name}`}><h2>{i + 1}. {video.name}</h2></Link>
           <div
             on:click={() => fetchVid(video.name)}
             class="cursor-pointer grid place-items-center"
