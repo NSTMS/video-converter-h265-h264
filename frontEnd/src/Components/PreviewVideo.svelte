@@ -33,6 +33,7 @@ const getVid = (vid) => {
 </script>
 
 <main>
+    <a href="/gallery"><p>Go Back</p></a>
     <video bind:this={video}
       class="mx-auto aspect-video w-1/2 h-auto p-4"
       controls
