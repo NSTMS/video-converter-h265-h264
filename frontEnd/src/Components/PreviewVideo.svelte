@@ -26,7 +26,6 @@ const getVid = (vid) => {
         status = true;
         const blob = new Blob([snap], { type: "video/mp4" });
         source.src = URL.createObjectURL(blob);
-        video.classList.toggle("hidden");
         video.load();
     });
 };
@@ -35,7 +34,7 @@ const getVid = (vid) => {
 
 <main>
     <video bind:this={video}
-      class="mx-auto aspect-video hidden w-1/2 h-auto p-4"
+      class="mx-auto aspect-video w-1/2 h-auto p-4"
       controls
     >
       <source bind:this={source} type="video/mp4" />
